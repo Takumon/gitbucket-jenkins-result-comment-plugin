@@ -1,9 +1,3 @@
-import javax.servlet.ServletContext
-
-import gitbucket.core.controller.Context
-import gitbucket.core.plugin._
-import gitbucket.core.service.RepositoryService.RepositoryInfo
-import gitbucket.core.service.SystemSettingsService.SystemSettings
 import gitbucket.core.service._
 import gitbucket.plugin.hook.JenkinsHook
 import io.github.gitbucket.solidbase.model.Version
