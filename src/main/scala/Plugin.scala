@@ -32,7 +32,7 @@ class Plugin extends gitbucket.core.plugin.Plugin {
 
 
   override val pullRequestHooks = Seq(
-    new JenkinsHook with PullRequestService with IssuesService with AccountService with RepositoryService with CommitsService
+    new JenkinsHook
   )
 
 }
