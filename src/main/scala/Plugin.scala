@@ -13,7 +13,9 @@ class Plugin extends gitbucket.core.plugin.Plugin {
   override val description = "You can check Jnekins result at Pull Request comment line"
 
   override val versions = List(
-    new Version("1.0.0", new LiquibaseMigration("update/gitbucket-jenkins-result-comment_1.0.0.xml"))
+    new Version("1.0.0", new LiquibaseMigration("update/gitbucket-jenkins-result-comment_1.0.0.xml")),
+    new Version("1.0.1", new LiquibaseMigration("update/gitbucket-jenkins-result-comment_1.0.1.xml"))
+
   )
 
   override val controllers: Seq[(String, ControllerBase)] = Seq(

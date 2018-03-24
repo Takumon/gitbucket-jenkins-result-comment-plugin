@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<changeSet>
+    <!--================================================================================================-->
+    <!-- JENKINS_RESULT_COMMENT_SETTING -->
+    <!--================================================================================================-->
+    <createTable tableName="JENKINS_RESULT_COMMENT_SETTING">
+        <column name="USER_NAME"            type="varchar(100)" nullable="false"/>
+        <column name="REPOSITORY_NAME"      type="varchar(100)" nullable="false"/>
+        <column name="JENKINS_URL"          type="varchar(200)" nullable="false"/>
+        <column name="JENKINS_JOB_NAME"     type="varchar(200)" nullable="false"/>
+        <column name="RESULT_BUILD_STATUS"  type="boolean"      nullable="false"/>
+        <column name="RESULT_TEST"          type="boolean"      nullable="false"/>
+        <column name="RESULT_CHECKSTYLE"    type="boolean"      nullable="false"/>
+        <column name="RESULT_FINDBUGS"      type="boolean"      nullable="false"/>
+        <column name="RESULT_PMD"           type="boolean"      nullable="false"/>
+    </createTable>
+
+    <addPrimaryKey
+            constraintName="IDX_JENKINS_RESULT_COMMENT_SETTING_PK"
+            tableName="JENKINS_RESULT_COMMENT_SETTING"
+            columnNames="USER_NAME, REPOSITORY_NAME"/>
+    <addForeignKeyConstraint
+            constraintName="IDX_JENKINS_RESULT_COMMENT_SETTING_FK0"
+            baseTableName="JENKINS_RESULT_COMMENT_SETTING"
+            baseColumnNames="USER_NAME, REPOSITORY_NAME"
+            referencedTableName="REPOSITORY"
+            referencedColumnNames="USER_NAME, REPOSITORY_NAME"/>
+</changeSet>

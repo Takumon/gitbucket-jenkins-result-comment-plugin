@@ -1,31 +1,60 @@
 package gitbucket.plugin.controller
 
 
+import gitbucket.core.util.Implicits._
+import scala.language.implicitConversions
+
 
 import gitbucket.core.controller.ControllerBase
 import gitbucket.core.service._
 import gitbucket.core.util.{OwnerAuthenticator, ReadableUsersAuthenticator, ReferrerAuthenticator, WritableUsersAuthenticator}
 import gitbucket.plugin.html
+import gitbucket.plugin.service.JenkinsResultCommentService
 import org.scalatra.forms._
-
 
 
 
 class JenkinsResultCommentController
   extends JenkinsResultCommentControllerBase
-    with RepositoryService with AccountService with ActivityService with IssuesService with WebHookService with CommitsService
+    with RepositoryService
+    with AccountService
+    with ActivityService
+    with IssuesService
+    with WebHookService
+    with CommitsService
     with OwnerAuthenticator
-    with LabelsService with MilestonesService with PrioritiesService
-    with ReadableUsersAuthenticator with ReferrerAuthenticator with WritableUsersAuthenticator with PullRequestService with CommitStatusService
-    with WebHookPullRequestService with WebHookPullRequestReviewCommentService with ProtectedBranchService
+    with LabelsService
+    with MilestonesService
+    with PrioritiesService
+    with ReadableUsersAuthenticator
+    with ReferrerAuthenticator
+    with WritableUsersAuthenticator
+    with PullRequestService
+    with CommitStatusService
+    with WebHookPullRequestService
+    with WebHookPullRequestReviewCommentService
+    with ProtectedBranchService
+    with JenkinsResultCommentService
 
 
 
 trait JenkinsResultCommentControllerBase extends ControllerBase {
-  self: RepositoryService with AccountService with ActivityService with IssuesService with WebHookService with CommitsService
+  self: RepositoryService
+    with AccountService
+    with ActivityService
+    with IssuesService
+    with WebHookService
+    with CommitsService
     with OwnerAuthenticator
-    with ReadableUsersAuthenticator with ReferrerAuthenticator with WritableUsersAuthenticator with PullRequestService with CommitStatusService
-    with WebHookPullRequestService with WebHookPullRequestReviewCommentService with ProtectedBranchService =>
+    with ReadableUsersAuthenticator
+    with ReferrerAuthenticator
+    with WritableUsersAuthenticator
+    with PullRequestService
+    with CommitStatusService
+    with WebHookPullRequestService
+    with WebHookPullRequestReviewCommentService
+    with ProtectedBranchService
+    with JenkinsResultCommentService =>
 
 
   case class SettingsForm(
@@ -52,6 +81,20 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
     println("get処理")
     println("フォーム : " + form)
     println("リポジトリ : " + repository)
+
+
+
+    registerJenkinsResultCommentSettings(
+      repositoryName = repository.name,
+      userName = repository.owner,
+      jenkinsUrl = form.jenkinsUrl,
+      jenkinsJobName = form.jenkinsJobName,
+      resultBuildStatus = form.resultBuildStatus,
+      resultTest = form.resultTest,
+      resultFindbugs = form.resultFindbugs,
+      resultCheckstyle = form.resultCheckstyle,
+      resultPmd = form.resultPmd
+    )
 
     html.setting(repository, None)
   })

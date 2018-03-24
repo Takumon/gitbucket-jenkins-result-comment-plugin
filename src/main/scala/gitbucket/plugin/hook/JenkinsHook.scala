@@ -4,11 +4,13 @@ import gitbucket.core.controller.Context
 import gitbucket.core.model.{Issue, Profile}
 import gitbucket.core.plugin.PullRequestHook
 import gitbucket.core.service._
+import gitbucket.core.model.Profile._
+import profile.api._
 
 trait JenkinsHook extends PullRequestHook {
   self: PullRequestService with PullRequestService with IssuesService with AccountService with RepositoryService with CommitsService =>
 
-  override def addedComment(commentId: Int, content: String, issue: Issue, repository: RepositoryService.RepositoryInfo)(implicit session: Profile.profile.api.Session, context: Context): Unit = {
+  override def addedComment(commentId: Int, content: String, issue: Issue, repository: RepositoryService.RepositoryInfo)(implicit session: Session, context: Context): Unit = {
     println(content)
 
     if (content != "Jenkins?") {
