@@ -22,7 +22,7 @@ trait JenkinsResultCommentService {
         resultCheckstyle:   Boolean,
         resultFindbugs:     Boolean,
         resultPmd:          Boolean)(implicit session: Session): Unit =
-    JenkinsResultCommentSettings.insert(JenkinsResultCommentSetting(
+    JenkinsResultCommentSettings.insertOrUpdate(JenkinsResultCommentSetting(
       userName = userName,
       repositoryName = repositoryName,
       jenkinsUrl = jenkinsUrl,
