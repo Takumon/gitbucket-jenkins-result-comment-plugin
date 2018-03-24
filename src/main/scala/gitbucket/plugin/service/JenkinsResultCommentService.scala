@@ -33,4 +33,9 @@ trait JenkinsResultCommentService {
       resultFindbugs = resultFindbugs,
       resultPmd = resultPmd
     ))
+
+  def deleteJenkinsResultCommentSetting(
+      userName: String,
+      repositoryName: String)(implicit session: Session): Unit =
+    JenkinsResultCommentSettings.filter(t => (t.userName === userName.bind) && (t.repositoryName === repositoryName.bind)).delete
 }

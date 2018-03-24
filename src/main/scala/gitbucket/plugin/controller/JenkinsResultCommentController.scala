@@ -100,7 +100,7 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
     html.setting(repository, setting, None)
   })
 
-  post("/:owner/:repository/settings/jenkins-result-comment", settingsForm)(ownerOnly { (form, repository) =>
+  post("/:owner/:repository/settings/jenkins-result-comment/upsert", settingsForm)(ownerOnly { (form, repository) =>
     println("登録処理")
     println("フォーム : " + form)
     println("リポジトリ : " + repository)
@@ -115,6 +115,18 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
       resultFindbugs    = form.resultFindbugs,
       resultCheckstyle  = form.resultCheckstyle,
       resultPmd         = form.resultPmd
+    )
+
+    redirect(s"/${repository.owner}/${repository.name}/settings/jenkins-result-comment")
+  })
+
+  post("/:owner/:repository/settings/jenkins-result-comment/delete")(ownerOnly { repository =>
+    println("削除処理")
+    println("リポジトリ : " + repository)
+
+    deleteJenkinsResultCommentSetting(
+      repositoryName    = repository.name,
+      userName          = repository.owner
     )
 
     redirect(s"/${repository.owner}/${repository.name}/settings/jenkins-result-comment")
