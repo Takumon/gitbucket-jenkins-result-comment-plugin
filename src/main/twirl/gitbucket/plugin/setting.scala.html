@@ -1,5 +1,5 @@
 
-@(repository: gitbucket.core.service.RepositoryService.RepositoryInfo, info: Option[Any])(implicit context: gitbucket.core.controller.Context)
+@(repository: gitbucket.core.service.RepositoryService.RepositoryInfo, jenkinsResultCommentSetting: gitbucket.plugin.model.JenkinsResultCommentSetting, info: Option[Any])(implicit context: gitbucket.core.controller.Context)
 
 @import context._
 @import gitbucket.core.view.helpers._
@@ -18,19 +18,19 @@
 
             <fieldset class="form-group">
                 <label for="jenkinsUrl" class="strong">Jnekins Url:</label>
-                <input type="text" name="jenkinsUrl" id="jenkinsUrl" class="form-control" value=""/>
+                <input type="text" name="jenkinsUrl" id="jenkinsUrl" class="form-control" value="@jenkinsResultCommentSetting.jenkinsUrl"/>
                 <span id="error-jenkinsUrl" class="error"></span>
             </fieldset>
 
             <fieldset class="form-group">
                 <label for="jenkinsJobName" class="strong">Jenkins Job Name:</label>
-                <input type="text" name="jenkinsJobName" id="jenkinsJobName" class="form-control" value=""/>
+                <input type="text" name="jenkinsJobName" id="jenkinsJobName" class="form-control" value="@jenkinsResultCommentSetting.jenkinsJobName"/>
                 <span id="error-jenkinsJobName" class="error"></span>
             </fieldset>
 
             <fieldset class="form-group">
                 <label class="checkbox" for="resultBuildStatus">
-                    <input type="checkbox" id="resultBuildStatus" name="resultBuildStatus"@if(true){ checked}/>
+                    <input type="checkbox" id="resultBuildStatus" name="resultBuildStatus"@if(jenkinsResultCommentSetting.resultBuildStatus){ checked}/>
                     Build Status<br>
                     <div class="normal muted">
                         contain build status result of Jenkins.
@@ -41,7 +41,7 @@
 
             <fieldset class="form-group">
                 <label class="checkbox" for="resultTest">
-                    <input type="checkbox" id="resultTest" name="resultTest"@if(true){ checked}/>
+                    <input type="checkbox" id="resultTest" name="resultTest"@if(jenkinsResultCommentSetting.resultTest){ checked}/>
                     Test<br>
                     <div class="normal muted">
                         contain test result of Jenkins.
@@ -51,7 +51,7 @@
 
             <fieldset class="form-group">
                 <label class="checkbox" for="resultFindbugs">
-                    <input type="checkbox" id="resultFindbugs" name="resultFindbugs"@if(true){ checked}/>
+                    <input type="checkbox" id="resultFindbugs" name="resultFindbugs"@if(jenkinsResultCommentSetting.resultFindbugs){ checked}/>
                     Findbugs<br>
                     <div class="normal muted">
                         contain findbugs result of Jenkins.
@@ -61,7 +61,7 @@
 
             <fieldset class="form-group">
                 <label class="checkbox" for="resultCheckstyle">
-                    <input type="checkbox" id="resultCheckstyle" name="resultCheckstyle"@if(true){ checked}/>
+                    <input type="checkbox" id="resultCheckstyle" name="resultCheckstyle"@if(jenkinsResultCommentSetting.resultCheckstyle){ checked}/>
                     Checkstyle<br>
                     <div class="normal muted">
                         contain pmd result of Jenkins.
@@ -71,7 +71,7 @@
 
             <fieldset class="form-group">
                 <label class="checkbox" for="resultPmd">
-                    <input type="checkbox" id="resultPmd" name="resultPmd"@if(true){ checked}/>
+                    <input type="checkbox" id="resultPmd" name="resultPmd"@if(jenkinsResultCommentSetting.resultPmd){ checked}/>
                     Pmd<br>
                     <div class="normal muted">
                         contain pmd result of Jenkins.

@@ -11,6 +11,7 @@ import gitbucket.core.util.{OwnerAuthenticator, ReadableUsersAuthenticator, Refe
 import gitbucket.plugin.html
 import gitbucket.plugin.service.JenkinsResultCommentService
 import org.scalatra.forms._
+import gitbucket.plugin.model.JenkinsResultCommentSetting
 
 
 
@@ -77,32 +78,45 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
     "resultPmd"           -> trim(label("Pmd"               , boolean()))
   )(SettingsForm.apply)
 
+
+  get("/:owner/:repository/settings/jenkins-result-comment")(ownerOnly { repository =>
+    println("初期表示")
+    println("リポジトリ : " + repository)
+
+    val settingOptions = getJenkinsResultCommentSetting(repository.owner, repositoryName = repository.name)
+    val setting = settingOptions.getOrElse(new JenkinsResultCommentSetting(
+        userName          = repository.owner,
+        repositoryName    = repository.name,
+        jenkinsUrl        = "",
+        jenkinsJobName    = "",
+        resultBuildStatus = false,
+        resultTest        = false,
+        resultCheckstyle  = false,
+        resultFindbugs    = false,
+        resultPmd         = false
+    ))
+
+
+    html.setting(repository, setting, None)
+  })
+
   post("/:owner/:repository/settings/jenkins-result-comment", settingsForm)(ownerOnly { (form, repository) =>
-    println("get処理")
+    println("登録処理")
     println("フォーム : " + form)
     println("リポジトリ : " + repository)
 
-
-
-    registerJenkinsResultCommentSettings(
-      repositoryName = repository.name,
-      userName = repository.owner,
-      jenkinsUrl = form.jenkinsUrl,
-      jenkinsJobName = form.jenkinsJobName,
+    registerJenkinsResultCommentSetting(
+      repositoryName    = repository.name,
+      userName          = repository.owner,
+      jenkinsUrl        = form.jenkinsUrl,
+      jenkinsJobName    = form.jenkinsJobName,
       resultBuildStatus = form.resultBuildStatus,
-      resultTest = form.resultTest,
-      resultFindbugs = form.resultFindbugs,
-      resultCheckstyle = form.resultCheckstyle,
-      resultPmd = form.resultPmd
+      resultTest        = form.resultTest,
+      resultFindbugs    = form.resultFindbugs,
+      resultCheckstyle  = form.resultCheckstyle,
+      resultPmd         = form.resultPmd
     )
 
-    html.setting(repository, None)
+    redirect(s"/${repository.owner}/${repository.name}/settings/jenkins-result-comment")
   })
-
-  get("/:owner/:repository/settings/jenkins-result-comment")(ownerOnly { repository =>
-    println("get処理")
-    println("リポジトリ : " + repository)
-    html.setting(repository, None)
-  })
-
 }

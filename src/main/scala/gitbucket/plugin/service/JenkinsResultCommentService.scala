@@ -6,7 +6,13 @@ import gitbucket.plugin.model.Profile.profile.blockingApi._
 
 
 trait JenkinsResultCommentService {
-  def registerJenkinsResultCommentSettings(
+
+  def getJenkinsResultCommentSetting(
+        userName: String,
+        repositoryName: String)(implicit session: Session): Option[JenkinsResultCommentSetting] =
+    JenkinsResultCommentSettings.filter(t => (t.userName === userName.bind) && (t.repositoryName === repositoryName.bind)).firstOption
+
+  def registerJenkinsResultCommentSetting(
         userName: String,
         repositoryName: String,
         jenkinsUrl:         String,
@@ -15,8 +21,7 @@ trait JenkinsResultCommentService {
         resultTest:         Boolean,
         resultCheckstyle:   Boolean,
         resultFindbugs:     Boolean,
-        resultPmd:          Boolean
-  )(implicit session: Session): Unit =
+        resultPmd:          Boolean)(implicit session: Session): Unit =
     JenkinsResultCommentSettings.insert(JenkinsResultCommentSetting(
       userName = userName,
       repositoryName = repositoryName,
