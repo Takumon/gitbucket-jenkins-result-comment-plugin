@@ -4,7 +4,7 @@ version := "0.0.1"
 scalaVersion := "2.12.4"
 gitbucketVersion := "4.20.0"
 
-// lazy val root = (project in file(".")).enablePlugins(SbtTwirl)
+scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-Xlint")
 
 useJCenter := true
 
