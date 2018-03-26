@@ -50,10 +50,12 @@ class JenkinsHook
 
 
     createCommentContent(setting).onComplete {
-      case Success(body) => {
-        println(body)
-        // TODO コメントのユーザ情報を定数か設定に外出し
-        createComment(repository.owner, repository.name, "jenkins", issue.issueId, body, "comment")
+      case Success(comment) => {
+        println(comment)
+        addPullRequestComment(repository.owner, repository.name, issue.issueId, comment, context.baseUrl).onComplete {
+          case Success(body) => println(body)
+          case Failure(t) => println(t.getMessage())
+        }
       }
       case Failure(t) => println(t.getMessage())
     }
@@ -62,15 +64,15 @@ class JenkinsHook
   def createCommentContent(setting: JenkinsResultCommentSetting): Future[String] = {
     import scala.concurrent.ExecutionContext.Implicits.global
 
-    // TODO Jenkinsから情報を取得する
-    // TODO マークダウン形式にフォーマットする
-    // TODO URLはDBから取得する
+    // TODO JenkinsURLはDBから取得する
+    // TODO Jenkinsから取得した情報をマークダウン形式にフォーマットする
     val jenkinsUrl = "http://192.168.1.3:10080/jenkins/job/SampleProject/job/issue-1/lastBuild/api/json"
-    getJenkinsResult(jenkinsUrl)._2.map(res => {
+    getJenkinsResult(jenkinsUrl).map(res => {
       val is = res.getEntity.getContent
       val content = scala.io.Source.fromInputStream(is).getLines.mkString
       is.close
       content
     })
   }
+
 }
