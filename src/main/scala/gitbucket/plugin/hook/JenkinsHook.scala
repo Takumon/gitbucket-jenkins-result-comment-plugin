@@ -1,7 +1,7 @@
 package gitbucket.plugin.hook
 
 import gitbucket.core.controller.Context
-import gitbucket.core.model.{Issue, Profile}
+import gitbucket.core.model.Issue
 import gitbucket.core.plugin.PullRequestHook
 import gitbucket.core.service._
 import gitbucket.core.model.Profile._
@@ -13,7 +13,8 @@ import gitbucket.plugin.service.JenkinsResultService
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util. {Success, Failure}
-
+import spray.json._
+import DefaultJsonProtocol._
 
 class JenkinsHook
   extends PullRequestHook
@@ -51,7 +52,10 @@ class JenkinsHook
 
     createCommentContent(setting).onComplete {
       case Success(comment) => {
+        println("▼コメント▼")
         println(comment)
+        println("▲コメント▲")
+
         addPullRequestComment(repository.owner, repository.name, issue.issueId, comment, context.baseUrl).onComplete {
           case Success(body) => println(body)
           case Failure(t) => println(t.getMessage())
@@ -71,8 +75,16 @@ class JenkinsHook
       val is = res.getEntity.getContent
       val content = scala.io.Source.fromInputStream(is).getLines.mkString
       is.close
-      content
+
+      val jsObject = content.parseJson.asJsObject
+      val status = jsObject.fields("result").convertTo[String]
+      val url = jsObject.fields("url").convertTo[String]
+
+      Array(
+        s"""#### [Jenkins最新ビルド結果]($url)""",
+        s"""**ステータス**""",
+        s"""`$status`"""
+      ).mkString("\\n")
     })
   }
-
 }
