@@ -59,23 +59,31 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
 
 
   case class SettingsForm(
-    jenkinsUrl:         String,
-    jenkinsJobName:     String,
-    resultBuildStatus:  Boolean,
-    resultTest:         Boolean,
-    resultCheckstyle:   Boolean,
-    resultFindbugs:     Boolean,
-    resultPmd:          Boolean
+    jenkinsUrl              : String,
+    jenkinsJobName          : String,
+    jenkinsUserId           : String,
+    jenkinsUserPass         : String,
+    gitbucketCommentUserId  : String,
+    gitbucketCommentUserPass: String,
+    resultBuildStatus       : Boolean,
+    resultTest              : Boolean,
+    resultCheckstyle        : Boolean,
+    resultFindbugs          : Boolean,
+    resultPmd               : Boolean
   )
 
   val settingsForm = mapping(
-    "jenkinsUrl"          -> trim(label("Jenkins Url"       , text(required, maxlength(200)))),
-    "jenkinsJobName"      -> trim(label("Jenkins Job Name"  , text(required, maxlength(200)))),
-    "resultBuildStatus"   -> trim(label("Build Status"      , boolean())),
-    "resultTest"          -> trim(label("Test"              , boolean())),
-    "resultCheckstyle"    -> trim(label("Checkstyle"        , boolean())),
-    "resultFindbugs"      -> trim(label("Findbugs"          , boolean())),
-    "resultPmd"           -> trim(label("Pmd"               , boolean()))
+    "jenkinsUrl"                    -> trim(label("Jenkins Url"                     , text(required, maxlength(200)))),
+    "jenkinsJobName"                -> trim(label("Jenkins Job Name"                , text(required, maxlength(200)))),
+    "jenkinsUserId"                 -> trim(label("Jenkins User Id"                 , text(required, maxlength(200)))),
+    "jenkinsUserPass"               -> trim(label("Jenkins User Password"           , text(required, maxlength(200)))),
+    "gitbucketCommentUserId"        -> trim(label("GitBucket Comment User Id"       , text(required, maxlength(200)))),
+    "gitbucketCommentUserPass"      -> trim(label("GitBucket Comment User Password" , text(required, maxlength(200)))),
+    "resultBuildStatus"             -> trim(label("Build Status"                    , boolean())),
+    "resultTest"                    -> trim(label("Test"                            , boolean())),
+    "resultCheckstyle"              -> trim(label("Checkstyle"                      , boolean())),
+    "resultFindbugs"                -> trim(label("Findbugs"                        , boolean())),
+    "resultPmd"                     -> trim(label("Pmd"                             , boolean()))
   )(SettingsForm.apply)
 
 
@@ -85,15 +93,18 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
 
     val settingOptions = getJenkinsResultCommentSetting(repository.owner, repositoryName = repository.name)
     val setting = settingOptions.getOrElse(new JenkinsResultCommentSetting(
-        userName          = repository.owner,
-        repositoryName    = repository.name,
-        jenkinsUrl        = "",
-        jenkinsJobName    = "",
-        resultBuildStatus = false,
-        resultTest        = false,
-        resultCheckstyle  = false,
-        resultFindbugs    = false,
-        resultPmd         = false
+        userName                  = repository.owner,
+        repositoryName            = repository.name,
+        jenkinsUrl                = "",
+        jenkinsJobName            = "",
+        jenkinsUserId             = "",
+        jenkinsUserPass           = "",
+        gitbucketCommentUserId    = "",
+        gitbucketCommentUserPass  = "",
+        resultTest                = false,
+        resultCheckstyle          = false,
+        resultFindbugs            = false,
+        resultPmd                 = false
     ))
 
 
@@ -106,15 +117,18 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
     println("リポジトリ : " + repository)
 
     registerJenkinsResultCommentSetting(
-      repositoryName    = repository.name,
-      userName          = repository.owner,
-      jenkinsUrl        = form.jenkinsUrl,
-      jenkinsJobName    = form.jenkinsJobName,
-      resultBuildStatus = form.resultBuildStatus,
-      resultTest        = form.resultTest,
-      resultFindbugs    = form.resultFindbugs,
-      resultCheckstyle  = form.resultCheckstyle,
-      resultPmd         = form.resultPmd
+      repositoryName            = repository.name,
+      userName                  = repository.owner,
+      jenkinsUrl                = form.jenkinsUrl,
+      jenkinsJobName            = form.jenkinsJobName,
+      jenkinsUserId             = form.jenkinsUserPass,
+      jenkinsUserPass           = form.jenkinsUserId,
+      gitbucketCommentUserId    = form.gitbucketCommentUserId,
+      gitbucketCommentUserPass  = form.gitbucketCommentUserId,
+      resultTest                = form.resultTest,
+      resultFindbugs            = form.resultFindbugs,
+      resultCheckstyle          = form.resultCheckstyle,
+      resultPmd                 = form.resultPmd
     )
 
     redirect(s"/${repository.owner}/${repository.name}/settings/jenkins-result-comment")

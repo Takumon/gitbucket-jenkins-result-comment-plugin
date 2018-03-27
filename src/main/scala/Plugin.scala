@@ -13,9 +13,10 @@ class Plugin extends gitbucket.core.plugin.Plugin {
   override val description = "You can check Jnekins result at Pull Request comment line"
 
   override val versions = List(
-    new Version("1.0.0", new LiquibaseMigration("update/gitbucket-jenkins-result-comment_1.0.0.xml")),
-    new Version("1.0.1", new LiquibaseMigration("update/gitbucket-jenkins-result-comment_1.0.1.xml"))
-
+    new Version("1.0.0"),
+    new Version("1.0.1"),
+    new Version("1.0.2"),
+    new Version("1.0.3", new LiquibaseMigration("update/gitbucket-jenkins-result-comment_1.0.3.xml"))
   )
 
   override val controllers: Seq[(String, ControllerBase)] = Seq(
@@ -25,7 +26,7 @@ class Plugin extends gitbucket.core.plugin.Plugin {
   override val repositorySettingTabs: Seq[(RepositoryService.RepositoryInfo, Context) => Option[Link]] = Seq(
     (repository: RepositoryInfo, contenxt: Context) => Some(Link(
       id = "jenkins-result-comment",
-      label = "Jenkins",
+      label = "Jenkins Result Comment",
       path = "settings/jenkins-result-comment"
     ))
   )

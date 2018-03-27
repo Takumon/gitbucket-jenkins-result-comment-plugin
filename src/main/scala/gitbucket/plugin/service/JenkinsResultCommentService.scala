@@ -13,25 +13,31 @@ trait JenkinsResultCommentService {
     JenkinsResultCommentSettings.filter(t => (t.userName === userName.bind) && (t.repositoryName === repositoryName.bind)).firstOption
 
   def registerJenkinsResultCommentSetting(
-        userName: String,
-        repositoryName: String,
-        jenkinsUrl:         String,
-        jenkinsJobName:     String,
-        resultBuildStatus:  Boolean,
-        resultTest:         Boolean,
-        resultCheckstyle:   Boolean,
-        resultFindbugs:     Boolean,
-        resultPmd:          Boolean)(implicit session: Session): Unit =
+        userName                : String,
+        repositoryName          : String,
+        jenkinsUrl              : String,
+        jenkinsJobName          : String,
+        jenkinsUserId           : String,
+        jenkinsUserPass         : String,
+        gitbucketCommentUserId  : String,
+        gitbucketCommentUserPass: String,
+        resultTest              : Boolean,
+        resultCheckstyle        : Boolean,
+        resultFindbugs          : Boolean,
+        resultPmd               : Boolean)(implicit session: Session): Unit =
     JenkinsResultCommentSettings.insertOrUpdate(JenkinsResultCommentSetting(
-      userName = userName,
-      repositoryName = repositoryName,
-      jenkinsUrl = jenkinsUrl,
-      jenkinsJobName = jenkinsJobName,
-      resultBuildStatus = resultBuildStatus,
-      resultTest = resultTest,
-      resultCheckstyle = resultCheckstyle,
-      resultFindbugs = resultFindbugs,
-      resultPmd = resultPmd
+      userName                  = userName,
+      repositoryName            = repositoryName,
+      jenkinsUrl                = jenkinsUrl,
+      jenkinsJobName            = jenkinsJobName,
+      jenkinsUserId             = jenkinsUserId,
+      jenkinsUserPass           = jenkinsUserPass,
+      gitbucketCommentUserId    = gitbucketCommentUserId,
+      gitbucketCommentUserPass  = gitbucketCommentUserPass,
+      resultTest                = resultTest,
+      resultCheckstyle          = resultCheckstyle,
+      resultFindbugs            = resultFindbugs,
+      resultPmd                 = resultPmd
     ))
 
   def deleteJenkinsResultCommentSetting(

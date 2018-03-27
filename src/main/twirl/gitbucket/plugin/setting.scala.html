@@ -18,9 +18,22 @@
 
             <fieldset class="form-group">
                 <label for="jenkinsUrl" class="strong">Jnekins Url:</label>
-                <input type="text" name="jenkinsUrl" id="jenkinsUrl" class="form-control" value="@jenkinsResultCommentSetting.jenkinsUrl"/>
+                <input type="text" name="jenkinsUrl" id="jenkinsUrl" class="form-control" value="@jenkinsResultCommentSetting.jenkinsUrl" placeholder="http://hostname:prot/jenkins"/>
                 <span id="error-jenkinsUrl" class="error"></span>
             </fieldset>
+
+            <fieldset class="form-group">
+                <label for="jenkinsUrl" class="strong">Jnekins User Id:</label>
+                <input type="text" name="jenkinsUserId" id="jenkinsUserId" class="form-control" value="@jenkinsResultCommentSetting.jenkinsUserId" placeholder="admin"/>
+                <span id="error-jenkinsUserId" class="error"></span>
+            </fieldset>
+
+            <fieldset class="form-group">
+                <label for="jenkinsUrl" class="strong">Jnekins User Password:</label>
+                <input type="password" name="jenkinsUserPass" id="jenkinsUserPass" class="form-control" value="@jenkinsResultCommentSetting.jenkinsUserPass" placeholder="admin"/>
+                <span id="error-jenkinsUserPass" class="error"></span>
+            </fieldset>
+
 
             <fieldset class="form-group">
                 <label for="jenkinsJobName" class="strong">Jenkins Job Name:</label>
@@ -29,14 +42,17 @@
             </fieldset>
 
             <fieldset class="form-group">
-                <label class="checkbox" for="resultBuildStatus">
-                    <input type="checkbox" id="resultBuildStatus" name="resultBuildStatus"@if(jenkinsResultCommentSetting.resultBuildStatus){ checked}/>
-                    Build Status<br>
-                    <div class="normal muted">
-                        contain build status result of Jenkins.
-                    </div>
-                </label>
+                <label for="jenkinsUrl" class="strong">GitBucket Comment User Id:</label>
+                <input type="text" name="gitbucketCommentUserId" id="gitbucketCommentUserId" class="form-control" value="@jenkinsResultCommentSetting.gitbucketCommentUserId" placeholder="jenkins"/>
+                <span id="error-gitbucketCommentUserId" class="error"></span>
             </fieldset>
+
+            <fieldset class="form-group">
+                <label for="jenkinsUrl" class="strong">GitBucket Comment User Password:</label>
+                <input type="password" name="gitbucketCommentUserPass" id="gitbucketCommentUserPass" class="form-control" value="@jenkinsResultCommentSetting.gitbucketCommentUserPass" placeholder="jenkins"/>
+                <span id="error-gitbucketCommentUserPass" class="error"></span>
+            </fieldset>
+
 
 
             <fieldset class="form-group">
