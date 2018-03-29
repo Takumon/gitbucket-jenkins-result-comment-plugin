@@ -31,7 +31,7 @@ class JenkinsHook
     settingOptions match {
       case Some(setting) => {
         getPullRequest(repository.owner, repository.name, issue.issueId) map { case(issue, pullreq) =>
-          getJenkinsBuildStatus(pullreq.branch, setting).onComplete {
+          getJenkinsResultComment(pullreq.branch, setting).onComplete {
             case Success(comment) => {
               addPullRequestComment(setting, issue.issueId, comment, context.baseUrl).onComplete {
                 case Success(body) => println("コメントに成功しました")
