@@ -75,8 +75,8 @@ trait JenkinsResultService {
       val url = jsObject.fields("url").convertTo[String]
 
       Array(
-        s"""#### [Jenkins最新ビルド結果]($url)""",
-        s"""**ステータス**""",
+        s"""#### Jenkins最新ビルド結果""",
+        s"""**[ステータス]($url)**""",
         s"""`$status`"""
       ).mkString("\\n")
     }
@@ -93,7 +93,7 @@ trait JenkinsResultService {
 
       Array(
         s"""""",
-        s"""**テスト**""",
+        s"""**[テスト]($jenkinsResultBaseUrl/testReport)**""",
         s"""""",
         s"""|全件|失敗|成功|スキップ|""",
         s"""|-:|-:|-:|-:|""",
@@ -111,7 +111,7 @@ trait JenkinsResultService {
       val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int];
       val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int];
 
-      s"""|Checkstyle|${high + normal + low}|${high}|${normal}|${low}|"""
+      s"""|[Checkstyle]($jenkinsResultBaseUrl/checkstyleResult)|${high + normal + low}|${high}|${normal}|${low}|"""
     }
 
   private def getJenkinsFindBugsResult(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[String] =
@@ -124,7 +124,7 @@ trait JenkinsResultService {
       val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int];
       val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int];
 
-      s"""|FindBugs|${high + normal + low}|${high}|${normal}|${low}|"""
+      s"""|[FindBugs]($jenkinsResultBaseUrl/findbugsResult)|${high + normal + low}|${high}|${normal}|${low}|"""
     }
 
   private def getJenkinsPMDResult(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[String] =
@@ -137,7 +137,7 @@ trait JenkinsResultService {
       val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int];
       val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int];
 
-      s"""|PMD|${high + normal + low}|${high}|${normal}|${low}|"""
+      s"""|[PMD]($jenkinsResultBaseUrl/pmdResult)|${high + normal + low}|${high}|${normal}|${low}|"""
     }
 
 
