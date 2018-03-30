@@ -1,10 +1,4 @@
-
 @(repository: gitbucket.core.service.RepositoryService.RepositoryInfo, jenkinsResultCommentSetting: gitbucket.plugin.model.JenkinsResultCommentSetting, info: Option[Any])(implicit context: gitbucket.core.controller.Context)
-
-@import context._
-@import gitbucket.core.view.helpers._
-@import gitbucket.core.util.Directory._
-
 
 @import gitbucket.core.view.helpers
 @gitbucket.core.html.main("Settings", Some(repository)){

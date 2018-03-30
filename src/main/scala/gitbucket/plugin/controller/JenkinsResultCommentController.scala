@@ -1,61 +1,39 @@
 package gitbucket.plugin.controller
 
 
-import gitbucket.core.util.Implicits._
-import scala.language.implicitConversions
-
-
 import gitbucket.core.controller.ControllerBase
 import gitbucket.core.service._
-import gitbucket.core.util.{OwnerAuthenticator, ReadableUsersAuthenticator, ReferrerAuthenticator, WritableUsersAuthenticator}
+import gitbucket.core.util.Implicits._
+import gitbucket.core.util.OwnerAuthenticator
 import gitbucket.plugin.html
+import gitbucket.plugin.model.JenkinsResultCommentSetting
 import gitbucket.plugin.service.JenkinsResultCommentService
 import org.scalatra.forms._
-import gitbucket.plugin.model.JenkinsResultCommentSetting
 
 
 
 class JenkinsResultCommentController
   extends JenkinsResultCommentControllerBase
+    with JenkinsResultCommentService
     with RepositoryService
     with AccountService
-    with ActivityService
     with IssuesService
-    with WebHookService
-    with CommitsService
     with OwnerAuthenticator
-    with LabelsService
-    with MilestonesService
-    with PrioritiesService
-    with ReadableUsersAuthenticator
-    with ReferrerAuthenticator
-    with WritableUsersAuthenticator
     with PullRequestService
-    with CommitStatusService
+    with CommitsService
     with WebHookPullRequestService
-    with WebHookPullRequestReviewCommentService
-    with ProtectedBranchService
-    with JenkinsResultCommentService
 
 
 
 trait JenkinsResultCommentControllerBase extends ControllerBase {
-  self: RepositoryService
-    with AccountService
-    with ActivityService
-    with IssuesService
-    with WebHookService
+  self: JenkinsResultCommentService
+    with RepositoryService
     with CommitsService
+    with IssuesService
     with OwnerAuthenticator
-    with ReadableUsersAuthenticator
-    with ReferrerAuthenticator
-    with WritableUsersAuthenticator
-    with PullRequestService
-    with CommitStatusService
+    with AccountService
     with WebHookPullRequestService
-    with WebHookPullRequestReviewCommentService
-    with ProtectedBranchService
-    with JenkinsResultCommentService =>
+    with PullRequestService =>
 
 
   case class SettingsForm(
@@ -92,7 +70,7 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
     println("リポジトリ : " + repository)
 
     val settingOptions = getJenkinsResultCommentSetting(repository.owner, repositoryName = repository.name)
-    val setting = settingOptions.getOrElse(new JenkinsResultCommentSetting(
+    val setting = settingOptions.getOrElse(JenkinsResultCommentSetting(
         userName                  = repository.owner,
         repositoryName            = repository.name,
         jenkinsUrl                = "",
@@ -124,7 +102,7 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
       jenkinsUserId             = form.jenkinsUserPass,
       jenkinsUserPass           = form.jenkinsUserId,
       gitbucketCommentUserId    = form.gitbucketCommentUserId,
-      gitbucketCommentUserPass  = form.gitbucketCommentUserId,
+      gitbucketCommentUserPass  = form.gitbucketCommentUserPass,
       resultTest                = form.resultTest,
       resultFindbugs            = form.resultFindbugs,
       resultCheckstyle          = form.resultCheckstyle,

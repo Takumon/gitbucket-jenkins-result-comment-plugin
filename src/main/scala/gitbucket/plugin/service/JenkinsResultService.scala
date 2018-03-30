@@ -19,11 +19,11 @@ trait JenkinsResultService {
 
   def addPullRequestComment(setting: JenkinsResultCommentSetting, pullRequestNumber: Int, comment: String, baseUrl: String): (Future[HttpResponse]) =
     Future {
-      val url = s"$baseUrl/api/v3/repos/${setting.userName}/${setting.repositoryName}/issues/$pullRequestNumber/comments";
+      val url = s"$baseUrl/api/v3/repos/${setting.userName}/${setting.repositoryName}/issues/$pullRequestNumber/comments"
       val httpClient = HttpClientBuilder.create.useSystemProperties.build
       val httpPost = new HttpPost(url)
       val com = s"""{"body":"$comment"}"""
-      val entity = EntityBuilder.create()
+      val entity = EntityBuilder.create
         .setContentType(ContentType.APPLICATION_JSON)
         .setText(com)
         .build()
@@ -38,7 +38,7 @@ trait JenkinsResultService {
 
   
   def getJenkinsResultComment(branchName: String, setting: JenkinsResultCommentSetting): Future[String] = {
-    val jenkinsResultBaseUrl = s"${setting.jenkinsUrl}/job/${setting.jenkinsJobName}/job/${branchName}/lastBuild"
+    val jenkinsResultBaseUrl = s"${setting.jenkinsUrl}/job/${setting.jenkinsJobName}/job/$branchName/lastBuild"
 
 
     var futures = List[Future[String]]()
@@ -102,9 +102,9 @@ trait JenkinsResultService {
       val content = getJenkinsResult(buildStatusUrl, setting)
       val jsObject = content.parseJson.asJsObject
 
-      val fail = jsObject.fields("failCount").convertTo[Int];
-      val pass = jsObject.fields("passCount").convertTo[Int];
-      val skip = jsObject.fields("skipCount").convertTo[Int];
+      val fail = jsObject.fields("failCount").convertTo[Int]
+      val pass = jsObject.fields("passCount").convertTo[Int]
+      val skip = jsObject.fields("skipCount").convertTo[Int]
 
       Array(
         s"""""",
@@ -112,7 +112,7 @@ trait JenkinsResultService {
         s"""""",
         s"""|全件|失敗|成功|スキップ|""",
         s"""|-:|-:|-:|-:|""",
-        s"""|${fail + pass + skip}|${fail}|${pass}|${skip}|""",
+        s"""|${fail + pass + skip}|$fail|$pass|$skip|"""
       ).mkString("\\n")
     }
 
@@ -122,11 +122,11 @@ trait JenkinsResultService {
       val content = getJenkinsResult(buildStatusUrl, setting)
       val jsObject = content.parseJson.asJsObject
 
-      val high = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int];
-      val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int];
-      val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int];
+      val high = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int]
+      val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int]
+      val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int]
 
-      s"""|[Checkstyle]($jenkinsResultBaseUrl/checkstyleResult)|${high + normal + low}|${high}|${normal}|${low}|"""
+      s"""|[Checkstyle]($jenkinsResultBaseUrl/checkstyleResult)|${high + normal + low}|$high|$normal|$low|"""
     }
 
   private def getJenkinsFindBugsResult(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[String] =
@@ -135,11 +135,11 @@ trait JenkinsResultService {
       val content = getJenkinsResult(buildStatusUrl, setting)
       val jsObject = content.parseJson.asJsObject
 
-      val high = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int];
-      val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int];
-      val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int];
+      val high = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int]
+      val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int]
+      val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int]
 
-      s"""|[FindBugs]($jenkinsResultBaseUrl/findbugsResult)|${high + normal + low}|${high}|${normal}|${low}|"""
+      s"""|[FindBugs]($jenkinsResultBaseUrl/findbugsResult)|${high + normal + low}|$high|$normal|$low|"""
     }
 
   private def getJenkinsPMDResult(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[String] =
@@ -148,11 +148,11 @@ trait JenkinsResultService {
       val content = getJenkinsResult(buildStatusUrl, setting)
       val jsObject = content.parseJson.asJsObject
 
-      val high = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int];
-      val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int];
-      val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int];
+      val high = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int]
+      val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int]
+      val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int]
 
-      s"""|[PMD]($jenkinsResultBaseUrl/pmdResult)|${high + normal + low}|${high}|${normal}|${low}|"""
+      s"""|[PMD]($jenkinsResultBaseUrl/pmdResult)|${high + normal + low}|$high|$normal|$low|"""
     }
 
 
