@@ -36,33 +36,48 @@ trait JenkinsResultService {
       res
     }
 
+  
   def getJenkinsResultComment(branchName: String, setting: JenkinsResultCommentSetting): Future[String] = {
     val jenkinsResultBaseUrl = s"${setting.jenkinsUrl}/job/${setting.jenkinsJobName}/job/${branchName}/lastBuild"
 
-    val statusF = getJenkinsBuildStatus(jenkinsResultBaseUrl, setting)
-    val testF = getJenkinsTestResult(jenkinsResultBaseUrl, setting)
-    val checkstyleF = getJenkinsCheckstyleResult(jenkinsResultBaseUrl, setting)
-    val findBugsF = getJenkinsFindBugsResult(jenkinsResultBaseUrl, setting)
-    val pmdF = getJenkinsPMDResult(jenkinsResultBaseUrl, setting)
 
-    for {
-      status <- statusF
-      test <- testF
-      checkstyle <- checkstyleF
-      findBugs <- findBugsF
-      pmd <- pmdF
-    } yield ( Array(
-      status,
-      test,
-      s"""""",
-      s"""**静的コード解析**""",
-      s"""""",
-      s"""||全件|高|中|低|""",
-      s"""|:-|-:|-:|-:|-:|""",
-      checkstyle,
-      findBugs,
-      pmd
-    ).mkString("\\n"))
+    var futures = List[Future[String]]()
+
+    futures :+= getJenkinsBuildStatus(jenkinsResultBaseUrl, setting)
+
+    if (setting.resultTest) {
+      futures :+= getJenkinsTestResult(jenkinsResultBaseUrl, setting)
+    }
+
+    if (setting.resultCheckstyle || setting.resultFindbugs || setting.resultPmd) {
+      futures :+= Future {
+        Array(
+          s"""""",
+          s"""**静的コード解析**""",
+          s"""""",
+          s"""||全件|高|中|低|""",
+          s"""|:-|-:|-:|-:|-:|"""
+        ).mkString("\\n")
+      }
+
+      if(setting.resultCheckstyle) {
+        futures :+= getJenkinsCheckstyleResult(jenkinsResultBaseUrl, setting)
+      }
+
+      if(setting.resultFindbugs) {
+        futures :+= getJenkinsFindBugsResult(jenkinsResultBaseUrl, setting)
+      }
+
+      if(setting.resultPmd) {
+        futures :+= getJenkinsPMDResult(jenkinsResultBaseUrl, setting)
+      }
+    }
+
+
+    val jenkinsResults = Future.sequence(futures)
+    jenkinsResults.map {
+      _.mkString("\\n")
+    }
   }
 
   private def getJenkinsBuildStatus(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[String] =
