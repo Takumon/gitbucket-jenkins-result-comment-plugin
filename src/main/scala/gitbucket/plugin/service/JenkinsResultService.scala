@@ -38,49 +38,55 @@ trait JenkinsResultService {
 
   
   def getJenkinsResultComment(branchName: String, setting: JenkinsResultCommentSetting): Future[String] = {
-    val jenkinsResultBaseUrl = s"${setting.jenkinsUrl}/job/${setting.jenkinsJobName}/job/$branchName/lastBuild"
+    val jenkinsLatestResultBaseUrl = s"${setting.jenkinsUrl}/job/${setting.jenkinsJobName}/job/$branchName/lastBuild"
 
 
-    var futures = List[Future[String]]()
+    getJenkinsBuildStatus(jenkinsLatestResultBaseUrl, setting).flatMap {
+      case (lastBuildNumber, buildStatusComment) => {
 
-    futures :+= getJenkinsBuildStatus(jenkinsResultBaseUrl, setting)
+        val jenkinsResultBaseUrl = s"${setting.jenkinsUrl}/job/${setting.jenkinsJobName}/job/$branchName/$lastBuildNumber"
 
-    if (setting.resultTest) {
-      futures :+= getJenkinsTestResult(jenkinsResultBaseUrl, setting)
-    }
+        var futures = List[Future[String]]()
 
-    if (setting.resultCheckstyle || setting.resultFindbugs || setting.resultPmd) {
-      futures :+= Future {
-        Array(
-          s"""""",
-          s"""**静的コード解析**""",
-          s"""""",
-          s"""||全件|高|中|低|""",
-          s"""|:-|-:|-:|-:|-:|"""
-        ).mkString("\\n")
+
+        if (setting.resultTest) {
+          futures :+= getJenkinsTestResult(jenkinsResultBaseUrl, setting)
+        }
+
+        if (setting.resultCheckstyle || setting.resultFindbugs || setting.resultPmd) {
+          futures :+= Future {
+            Array(
+              s"""""",
+              s"""**静的コード解析**""",
+              s"""""",
+              s"""||全件|高|中|低|""",
+              s"""|:-|-:|-:|-:|-:|"""
+            ).mkString("\\n")
+          }
+
+          if (setting.resultCheckstyle) {
+            futures :+= getJenkinsCheckstyleResult(jenkinsResultBaseUrl, setting)
+          }
+
+          if (setting.resultFindbugs) {
+            futures :+= getJenkinsFindBugsResult(jenkinsResultBaseUrl, setting)
+          }
+
+          if (setting.resultPmd) {
+            futures :+= getJenkinsPMDResult(jenkinsResultBaseUrl, setting)
+          }
+        }
+
+
+        val jenkinsResults = Future.sequence(futures)
+        jenkinsResults.map {
+          buildStatusComment + "\\n" + _.mkString("\\n")
+        }
       }
-
-      if(setting.resultCheckstyle) {
-        futures :+= getJenkinsCheckstyleResult(jenkinsResultBaseUrl, setting)
-      }
-
-      if(setting.resultFindbugs) {
-        futures :+= getJenkinsFindBugsResult(jenkinsResultBaseUrl, setting)
-      }
-
-      if(setting.resultPmd) {
-        futures :+= getJenkinsPMDResult(jenkinsResultBaseUrl, setting)
-      }
-    }
-
-
-    val jenkinsResults = Future.sequence(futures)
-    jenkinsResults.map {
-      _.mkString("\\n")
     }
   }
 
-  private def getJenkinsBuildStatus(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[String] =
+  private def getJenkinsBuildStatus(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[(Int, String)] =
     Future {
       val buildStatusUrl = s"$jenkinsResultBaseUrl/api/json"
       val content = getJenkinsResult(buildStatusUrl, setting)
@@ -88,12 +94,16 @@ trait JenkinsResultService {
 
       val status = jsObject.fields("result").convertTo[String]
       val url = jsObject.fields("url").convertTo[String]
+      val lastBuildNumber = jsObject.fields("number").convertTo[Int]
 
-      Array(
+
+      val comment = Array(
         s"""#### Jenkins最新ビルド結果""",
-        s"""**[ステータス]($url)**""",
+        s"""**[ステータス]($url/$lastBuildNumber)**""",
         s"""`$status`"""
       ).mkString("\\n")
+
+      (lastBuildNumber,comment)
     }
 
   private def getJenkinsTestResult(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[String] =
