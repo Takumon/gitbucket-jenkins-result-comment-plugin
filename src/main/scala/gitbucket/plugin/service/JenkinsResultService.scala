@@ -133,11 +133,16 @@ trait JenkinsResultService {
       val content = getJenkinsResult(buildStatusUrl, setting)
       val jsObject = content.parseJson.asJsObject
 
-      val high = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int]
-      val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int]
-      val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int]
+      val highCount = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int]
+      val normalCount = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int]
+      val lowCount = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int]
 
-      s"""|[Checkstyle]($jenkinsResultBaseUrl/checkstyleResult)|${high + normal + low}|$high|$normal|$low|"""
+      val url = s"$jenkinsResultBaseUrl/checkstyleResult"
+      val high    = if (highCount > 0)    s"""[$highCount]($url/HIGH)"""      else s"$highCount"
+      val normal  = if (normalCount > 0)  s"""[$normalCount]($url/NORMAL)"""  else s"$normalCount"
+      val low     = if (lowCount > 0)     s"""[$lowCount]($url/LOW)"""        else s"$lowCount"
+
+      s"""|[Checkstyle]($url)|${highCount + normalCount + lowCount}|$high|$normal|$low|"""
     }
 
   private def getJenkinsFindBugsResult(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[String] =
@@ -146,11 +151,16 @@ trait JenkinsResultService {
       val content = getJenkinsResult(buildStatusUrl, setting)
       val jsObject = content.parseJson.asJsObject
 
-      val high = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int]
-      val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int]
-      val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int]
+      val highCount = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int]
+      val normalCount = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int]
+      val lowCount = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int]
 
-      s"""|[FindBugs]($jenkinsResultBaseUrl/findbugsResult)|${high + normal + low}|$high|$normal|$low|"""
+      val url = s"$jenkinsResultBaseUrl/findbugsResult"
+      val high    = if (highCount > 0)    s"""[$highCount]($url/HIGH)"""      else s"$highCount"
+      val normal  = if (normalCount > 0)  s"""[$normalCount]($url/NORMAL)"""  else s"$normalCount"
+      val low     = if (lowCount > 0)     s"""[$lowCount]($url/LOW)"""        else s"$lowCount"
+
+      s"""|[FindBugs]($url)|${highCount + normalCount + lowCount}|$high|$normal|$low|"""
     }
 
   private def getJenkinsPMDResult(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[String] =
@@ -159,11 +169,16 @@ trait JenkinsResultService {
       val content = getJenkinsResult(buildStatusUrl, setting)
       val jsObject = content.parseJson.asJsObject
 
-      val high = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int]
-      val normal = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int]
-      val low = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int]
+      val highCount = jsObject.fields("numberOfHighPriorityWarnings").convertTo[Int]
+      val normalCount = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int]
+      val lowCount= jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int]
 
-      s"""|[PMD]($jenkinsResultBaseUrl/pmdResult)|${high + normal + low}|$high|$normal|$low|"""
+      val url = s"$jenkinsResultBaseUrl/pmdResult"
+      val high    = if (highCount > 0)    s"""[$highCount]($url/HIGH)"""      else s"$highCount"
+      val normal  = if (normalCount > 0)  s"""[$normalCount]($url/NORMAL)"""  else s"$normalCount"
+      val low     = if (lowCount > 0)     s"""[$lowCount]($url/LOW)"""        else s"$lowCount"
+
+      s"""|[PMD]($url)|${highCount + normalCount + lowCount}|$high|$normal|$low|"""
     }
 
 
