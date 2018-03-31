@@ -7,7 +7,7 @@ import org.apache.http.client.entity.EntityBuilder
 import org.apache.http.client.methods.{HttpGet, HttpPost}
 import org.apache.http.entity.ContentType
 import org.apache.http.impl.client.HttpClientBuilder
-import org.apache.http.{HttpHeaders, HttpResponse}
+import org.apache.http._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
@@ -178,8 +178,49 @@ trait JenkinsResultService {
 
     val is = res.getEntity.getContent
     val content = scala.io.Source.fromInputStream(is).getLines.mkString
-    is.close
+    is.close()
     content
   }
+
+
+  def testJenkinsResult(jenkinsUrl: String, jenkinsJobName: String, jenkinsUserId: String, jenkinsUserPass: String): (String, Future[HttpRequest], Future[HttpResponse]) = {
+
+    val url = s"""$jenkinsUrl/job/$jenkinsJobName/api/json"""
+
+    val requestPromise = Promise[HttpRequest]
+    val responseFuture = Future {
+      val intercepter = new HttpRequestInterceptor {
+        override def process(request: HttpRequest, context: protocol.HttpContext): Unit = {
+          requestPromise.success(request)
+        }
+      }
+
+      try {
+        val httpClient = HttpClientBuilder.create.useSystemProperties.addInterceptorLast(intercepter).build
+        val httpGet = new HttpGet(url)
+        val encodedAuth = Base64.getEncoder.encodeToString(s"$jenkinsUserId:$jenkinsUserPass".getBytes(StandardCharsets.UTF_8))
+        httpGet.addHeader(HttpHeaders.AUTHORIZATION, s"Basic $encodedAuth")
+
+        val res = httpClient.execute(httpGet)
+        httpGet.releaseConnection()
+        res
+      } catch {
+        case e: Throwable => {
+          if (!requestPromise.isCompleted) {
+            requestPromise.failure(e)
+          }
+          throw e
+        }
+      }
+    }
+
+    (url, requestPromise.future, responseFuture)
+  }
+
+
+
+
+
+
 
 }
