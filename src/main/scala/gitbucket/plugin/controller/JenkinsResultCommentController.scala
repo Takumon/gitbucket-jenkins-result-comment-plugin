@@ -92,7 +92,7 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
     ))
 
 
-    html.setting(repository, setting, None)
+    html.setting(repository, setting, flash.get("info"))
   })
 
   ajaxPost("/:owner/:repository/settings/jenkins-result-comment/test")(ownerOnly { repository =>
@@ -146,6 +146,7 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
       resultPmd                 = form.resultPmd
     )
 
+    flash += "info" -> "Jenkins Result Comment settings has been updated."
     redirect(s"/${repository.owner}/${repository.name}/settings/jenkins-result-comment")
   })
 
@@ -157,6 +158,7 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
       userName          = repository.owner
     )
 
+    flash += "info" -> "Jenkins Result Comment settings deleted."
     redirect(s"/${repository.owner}/${repository.name}/settings/jenkins-result-comment")
   })
 }
