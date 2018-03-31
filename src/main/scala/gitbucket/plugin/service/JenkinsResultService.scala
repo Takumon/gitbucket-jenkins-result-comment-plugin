@@ -93,13 +93,14 @@ trait JenkinsResultService {
       val jsObject = content.parseJson.asJsObject
 
       val status = jsObject.fields("result").convertTo[String]
+      // このURLは XXX/lastBuildではなく　XXX/12 のようにビルド番号が指定されている
       val url = jsObject.fields("url").convertTo[String]
       val lastBuildNumber = jsObject.fields("number").convertTo[Int]
 
 
       val comment = Array(
         s"""#### Jenkins最新ビルド結果""",
-        s"""**[ステータス]($url/$lastBuildNumber)**""",
+        s"""**[ステータス]($url)**""",
         s"""`$status`"""
       ).mkString("\\n")
 
