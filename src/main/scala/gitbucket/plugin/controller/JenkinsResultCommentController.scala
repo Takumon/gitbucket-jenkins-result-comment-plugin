@@ -52,11 +52,11 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
 
   val settingsForm = mapping(
     "jenkinsUrl"                    -> trim(label("Jenkins Url"                     , text(required, maxlength(200)))),
-    "jenkinsJobName"                -> trim(label("Jenkins Job Name"                , text(required, maxlength(200)))),
-    "jenkinsUserId"                 -> trim(label("Jenkins User Id"                 , text(required, maxlength(200)))),
-    "jenkinsUserPass"               -> trim(label("Jenkins User Password"           , text(required, maxlength(200)))),
-    "gitbucketCommentUserId"        -> trim(label("GitBucket Comment User Id"       , text(required, maxlength(200)))),
-    "gitbucketCommentUserPass"      -> trim(label("GitBucket Comment User Password" , text(required, maxlength(200)))),
+    "jenkinsJobName"                -> trim(label("Jenkins Job Name"                , text(required, maxlength(100)))),
+    "jenkinsUserId"                 -> trim(label("Jenkins User Id"                 , text(required, maxlength(100)))),
+    "jenkinsUserPass"               -> trim(label("Jenkins User Password"           , text(required, maxlength(100)))),
+    "gitbucketCommentUserId"        -> trim(label("GitBucket Comment User Id"       , text(required, maxlength(100)))),
+    "gitbucketCommentUserPass"      -> trim(label("GitBucket Comment User Password" , text(required, maxlength(100)))),
     "resultBuildStatus"             -> trim(label("Build Status"                    , boolean())),
     "resultTest"                    -> trim(label("Test"                            , boolean())),
     "resultCheckstyle"              -> trim(label("Checkstyle"                      , boolean())),
@@ -66,8 +66,6 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
 
 
   get("/:owner/:repository/settings/jenkins-result-comment")(ownerOnly { repository =>
-    println("初期表示")
-    println("リポジトリ : " + repository)
 
     val settingOptions = getJenkinsResultCommentSetting(repository.owner, repositoryName = repository.name)
     val setting = settingOptions.getOrElse(JenkinsResultCommentSetting(
@@ -89,10 +87,7 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
     html.setting(repository, setting, None)
   })
 
-  post("/:owner/:repository/settings/jenkins-result-comment/upsert", settingsForm)(ownerOnly { (form, repository) =>
-    println("登録処理")
-    println("フォーム : " + form)
-    println("リポジトリ : " + repository)
+  post("/:owner/:repository/settings/jenkins-result-comment", settingsForm)(ownerOnly { (form, repository) =>
 
     registerJenkinsResultCommentSetting(
       repositoryName            = repository.name,
@@ -113,8 +108,6 @@ trait JenkinsResultCommentControllerBase extends ControllerBase {
   })
 
   post("/:owner/:repository/settings/jenkins-result-comment/delete")(ownerOnly { repository =>
-    println("削除処理")
-    println("リポジトリ : " + repository)
 
     deleteJenkinsResultCommentSetting(
       repositoryName    = repository.name,

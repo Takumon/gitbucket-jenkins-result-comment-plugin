@@ -12,7 +12,7 @@ import org.apache.http.{HttpHeaders, HttpResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import spray.json._
-import DefaultJsonProtocol._
+import spray.json.DefaultJsonProtocol._
 import gitbucket.plugin.model.JenkinsResultCommentSetting
 
 trait JenkinsResultService {
