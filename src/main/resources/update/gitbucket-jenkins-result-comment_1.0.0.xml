@@ -7,11 +7,11 @@
         <column name="USER_NAME"                    type="varchar(100)" nullable="false"/>
         <column name="REPOSITORY_NAME"              type="varchar(100)" nullable="false"/>
         <column name="JENKINS_URL"                  type="varchar(200)" nullable="false"/>
-        <column name="JENKINS_JOB_NAME"             type="varchar(200)" nullable="false"/>
-        <column name="JENKINS_USER_ID"              type="varchar(200)" nullable="false"/>
-        <column name="JENKINS_USER_PASS"            type="varchar(200)" nullable="false"/>
-        <column name="GITBUCKET_COMMENT_USER_ID"    type="varchar(200)" nullable="false"/>
-        <column name="GITBUCKET_COMMENT_USER_PASS"  type="varchar(200)" nullable="false"/>
+        <column name="JENKINS_JOB_NAME"             type="varchar(100)" nullable="false"/>
+        <column name="JENKINS_USER_ID"              type="varchar(100)" nullable="false"/>
+        <column name="JENKINS_USER_PASS"            type="varchar(100)" nullable="false"/>
+        <column name="GITBUCKET_COMMENT_USER_ID"    type="varchar(100)" nullable="false"/>
+        <column name="GITBUCKET_COMMENT_USER_PASS"  type="varchar(100)" nullable="false"/>
         <column name="RESULT_TEST"                  type="boolean"      nullable="false"/>
         <column name="RESULT_CHECKSTYLE"            type="boolean"      nullable="false"/>
         <column name="RESULT_FINDBUGS"              type="boolean"      nullable="false"/>

@@ -1,21 +1,14 @@
-
 @(repository: gitbucket.core.service.RepositoryService.RepositoryInfo, jenkinsResultCommentSetting: gitbucket.plugin.model.JenkinsResultCommentSetting, info: Option[Any])(implicit context: gitbucket.core.controller.Context)
-
-@import context._
-@import gitbucket.core.view.helpers._
-@import gitbucket.core.util.Directory._
-
 
 @import gitbucket.core.view.helpers
 @gitbucket.core.html.main("Settings", Some(repository)){
 @gitbucket.core.html.menu("settings", repository){
 @gitbucket.core.settings.html.menu("jenkins-result-comment", repository){
 @gitbucket.core.helper.html.information(info)
-<form id="form" method="post" action="@helpers.url(repository)/settings/jenkins-result-comment/upsert">
+<form id="form" method="post" action="@helpers.url(repository)/settings/jenkins-result-comment" validate="true">
     <div class="panel panel-default">
         <div class="panel-heading strong">Jenkins result comment</div>
         <div class="panel-body">
-
             <fieldset class="form-group">
                 <label for="jenkinsUrl" class="strong">Jnekins Url:</label>
                 <input type="text" name="jenkinsUrl" id="jenkinsUrl" class="form-control" value="@jenkinsResultCommentSetting.jenkinsUrl" placeholder="http://hostname:prot/jenkins"/>
@@ -23,13 +16,13 @@
             </fieldset>
 
             <fieldset class="form-group">
-                <label for="jenkinsUrl" class="strong">Jnekins User Id:</label>
+                <label for="jenkinsUserId" class="strong">Jnekins User Id:</label>
                 <input type="text" name="jenkinsUserId" id="jenkinsUserId" class="form-control" value="@jenkinsResultCommentSetting.jenkinsUserId" placeholder="admin"/>
                 <span id="error-jenkinsUserId" class="error"></span>
             </fieldset>
 
             <fieldset class="form-group">
-                <label for="jenkinsUrl" class="strong">Jnekins User Password:</label>
+                <label for="jenkinsUserPass" class="strong">Jnekins User Password:</label>
                 <input type="password" name="jenkinsUserPass" id="jenkinsUserPass" class="form-control" value="@jenkinsResultCommentSetting.jenkinsUserPass" placeholder="admin"/>
                 <span id="error-jenkinsUserPass" class="error"></span>
             </fieldset>
@@ -42,14 +35,14 @@
             </fieldset>
 
             <fieldset class="form-group">
-                <label for="jenkinsUrl" class="strong">GitBucket Comment User Id:</label>
+                <label for="gitbucketCommentUserId" class="strong">GitBucket Comment User Id:</label>
                 <input type="text" name="gitbucketCommentUserId" id="gitbucketCommentUserId" class="form-control" value="@jenkinsResultCommentSetting.gitbucketCommentUserId" placeholder="jenkins"/>
                 <span id="error-gitbucketCommentUserId" class="error"></span>
             </fieldset>
 
             <fieldset class="form-group">
-                <label for="jenkinsUrl" class="strong">GitBucket Comment User Password:</label>
-                <input type="password" name="gitbucketCommentUserPass" id="gitbucketCommentUserPass" class="form-control" value="@jenkinsResultCommentSetting.gitbucketCommentUserPass" placeholder="jenkins"/>
+                <label for="gitbucketCommentUserPass" class="strong">GitBucket Comment User Password:</label>
+                <input type="password" name="gitbucketCommentUserPass" id="gitucketCommentUserPass" class="form-control" value="@jenkinsResultCommentSetting.gitbucketCommentUserPass" placeholder="jenkins"/>
                 <span id="error-gitbucketCommentUserPass" class="error"></span>
             </fieldset>
 
@@ -99,7 +92,7 @@
     </div>
     <div style="margin-top: 20px;">
         <input type="submit" class="btn btn-danger" formaction="@helpers.url(repository)/settings/jenkins-result-comment/delete" value="Delete Setting"/>
-        <input type="submit" style="float: right;"class="btn btn-success" formaction="@helpers.url(repository)/settings/jenkins-result-comment/upsert" value="Apply changes"/>
+        <input type="submit" style="float: right;"class="btn btn-success" value="Apply changes"/>
     </div>
 </form>
 }
