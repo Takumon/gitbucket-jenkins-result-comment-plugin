@@ -137,7 +137,7 @@ trait JenkinsResultService {
       val normalCount = jsObject.fields("numberOfNormalPriorityWarnings").convertTo[Int]
       val lowCount = jsObject.fields("numberOfLowPriorityWarnings").convertTo[Int]
 
-      val url = s"$jenkinsResultBaseUrl/findbugsResult"
+      val url = s"$jenkinsResultBaseUrl/checkstyleResult"
       val high    = if (highCount > 0)    s"""[$highCount]($url/HIGH)"""      else s"$highCount"
       val normal  = if (normalCount > 0)  s"""[$normalCount]($url/NORMAL)"""  else s"$normalCount"
       val low     = if (lowCount > 0)     s"""[$lowCount]($url/LOW)"""        else s"$lowCount"
