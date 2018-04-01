@@ -41,7 +41,7 @@ trait JenkinsResultService {
     val jenkinsLatestResultBaseUrl = s"${setting.jenkinsUrl}/job/${setting.jenkinsJobName}/job/$branchName/lastBuild"
 
 
-    getJenkinsBuildStatus(jenkinsLatestResultBaseUrl, setting).flatMap {
+    getJenkinsBuildStatus(branchName, jenkinsLatestResultBaseUrl, setting).flatMap {
       case (lastBuildNumber, buildStatusComment) => {
 
         val jenkinsResultBaseUrl = s"${setting.jenkinsUrl}/job/${setting.jenkinsJobName}/job/$branchName/$lastBuildNumber"
@@ -57,9 +57,9 @@ trait JenkinsResultService {
           futures :+= Future {
             Array(
               s"""""",
-              s"""**静的コード解析**""",
+              s"""**Static Analysis**""",
               s"""""",
-              s"""||全件|高|中|低|""",
+              s"""||Total|High|Normal|Low|""",
               s"""|:-|-:|-:|-:|-:|"""
             ).mkString("\\n")
           }
@@ -86,7 +86,7 @@ trait JenkinsResultService {
     }
   }
 
-  private def getJenkinsBuildStatus(jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[(Int, String)] =
+  private def getJenkinsBuildStatus(branchName: String, jenkinsResultBaseUrl: String, setting: JenkinsResultCommentSetting): Future[(Int, String)] =
     Future {
       val buildStatusUrl = s"$jenkinsResultBaseUrl/api/json"
       val content = getJenkinsResult(buildStatusUrl, setting)
@@ -99,8 +99,9 @@ trait JenkinsResultService {
 
 
       val comment = Array(
-        s"""#### Jenkins最新ビルド結果""",
-        s"""**[ステータス]($url)**""",
+        s"""#### Jenkins Build Result""",
+        s"""<small>Job: **${setting.jenkinsJobName}**, Branch: **$branchName**, Build Number: **$lastBuildNumber**</small><hr>""",
+        s"""**[Status]($url)**""",
         s"""`$status`"""
       ).mkString("\\n")
 
@@ -119,9 +120,9 @@ trait JenkinsResultService {
 
       Array(
         s"""""",
-        s"""**[テスト]($jenkinsResultBaseUrl/testReport)**""",
+        s"""**[Test]($jenkinsResultBaseUrl/testReport)**""",
         s"""""",
-        s"""|全件|失敗|成功|スキップ|""",
+        s"""|Total|Fail|Success|Skip|""",
         s"""|-:|-:|-:|-:|""",
         s"""|${fail + pass + skip}|$fail|$pass|$skip|"""
       ).mkString("\\n")
