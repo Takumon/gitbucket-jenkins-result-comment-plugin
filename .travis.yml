@@ -1,9 +1,16 @@
 sudo: false
 language: scala
+scala:
+  - 2.12.4
 jdk:
-- oraclejdk8
+  - oraclejdk8
 script:
-- sbt test
+  - sbt assembly
+  - cp target/scala-*/*.jar .
+cache:
+  directories:
+    - "$HOME/.ivy2"
+    - "$HOME/.sbt"
 addons:
   apt:
     packages:
